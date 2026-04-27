@@ -12,6 +12,7 @@ class ToyConfig {
     required this.type,
     required this.baseColor,
     required this.accentColor,
+    required this.detailColor,
     required this.startPosition,
     required this.movement,
     required this.periodSeconds,
@@ -20,6 +21,7 @@ class ToyConfig {
   final ToyType type;
   final Color baseColor;
   final Color accentColor;
+  final Color detailColor;
   final Offset startPosition;
   final Offset movement;
   final double periodSeconds;
@@ -163,22 +165,22 @@ class _InteractiveToyState extends State<InteractiveToy>
 
   void _startDriftSegment() {
     final delta = Offset(
-      _randomRangeDouble(-0.06, 0.06),
       _randomRangeDouble(-0.05, 0.05),
+      _randomRangeDouble(-0.045, 0.045),
     );
     final target = _clampPosition(_position + delta);
-    _startSegment(_position, target, _randomRangeDouble(2.2, 4.2), MotionMode.drift);
+    _startSegment(_position, target, _randomRangeDouble(2.4, 4.4), MotionMode.drift);
   }
 
   void _startDartSegment() {
     final delta = Offset(
-      _randomRangeDouble(-0.16, 0.16),
-      _randomRangeDouble(-0.12, 0.12),
+      _randomRangeDouble(-0.14, 0.14),
+      _randomRangeDouble(-0.1, 0.1),
     );
     final target = _clampPosition(_position + delta);
-    _startSegment(_position, target, _randomRangeDouble(0.35, 0.7), MotionMode.dart);
-    if (_random.nextDouble() < 0.35) {
-      _pauseRemaining = _randomRangeDouble(0.15, 0.35);
+    _startSegment(_position, target, _randomRangeDouble(0.45, 0.75), MotionMode.dart);
+    if (_random.nextDouble() < 0.4) {
+      _pauseRemaining = _randomRangeDouble(0.25, 0.6);
     }
   }
 
@@ -217,11 +219,13 @@ class _InteractiveToyState extends State<InteractiveToy>
 
   void _startEscape(Offset tapPosition) {
     _mode = MotionMode.escape;
-    _shakeRemaining = 0.35;
+    _shakeRemaining = 0.55;
     final direction = (_position - tapPosition);
-    final norm = direction.distance == 0 ? Offset(_randomRangeDouble(-1, 1), _randomRangeDouble(-1, 1)) : direction / direction.distance;
-    final target = _clampPosition(_position + norm * 0.35);
-    _startSegment(_position, target, 0.45, MotionMode.escape);
+    final norm = direction.distance == 0
+        ? Offset(_randomRangeDouble(-1, 1), _randomRangeDouble(-1, 1))
+        : direction / direction.distance;
+    final target = _clampPosition(_position + norm * 0.55);
+    _startSegment(_position, target, 0.32, MotionMode.escape);
   }
 
   Offset _clampPosition(Offset position) {
@@ -253,7 +257,7 @@ class _InteractiveToyState extends State<InteractiveToy>
     if (_shakeRemaining <= 0) {
       return Offset.zero;
     }
-    final strength = 0.018 * (_shakeRemaining / 0.35).clamp(0.2, 1.0);
+    final strength = 0.02 * (_shakeRemaining / 0.4).clamp(0.2, 1.0);
     return Offset(
       _randomRangeDouble(-strength, strength),
       _randomRangeDouble(-strength, strength),
@@ -305,6 +309,7 @@ class _InteractiveToyState extends State<InteractiveToy>
                         diameter: widget.diameter,
                         baseColor: widget.config.baseColor,
                         accentColor: widget.config.accentColor,
+                        detailColor: widget.config.detailColor,
                         type: widget.config.type,
                         bright: _tapped,
                       ),
@@ -325,6 +330,7 @@ class _ToyVisual extends StatelessWidget {
     required this.diameter,
     required this.baseColor,
     required this.accentColor,
+    required this.detailColor,
     required this.type,
     required this.bright,
   });
@@ -332,6 +338,7 @@ class _ToyVisual extends StatelessWidget {
   final double diameter;
   final Color baseColor;
   final Color accentColor;
+  final Color detailColor;
   final ToyType type;
   final bool bright;
 
@@ -343,6 +350,7 @@ class _ToyVisual extends StatelessWidget {
       painter: _ToyPainter(
         baseColor: effectiveBase,
         accentColor: accentColor,
+        detailColor: detailColor,
         type: type,
         bright: bright,
       ),
@@ -354,12 +362,14 @@ class _ToyPainter extends CustomPainter {
   _ToyPainter({
     required this.baseColor,
     required this.accentColor,
+    required this.detailColor,
     required this.type,
     required this.bright,
   });
 
   final Color baseColor;
   final Color accentColor;
+  final Color detailColor;
   final ToyType type;
   final bool bright;
 
@@ -367,34 +377,35 @@ class _ToyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = baseColor;
     final accent = Paint()..color = accentColor;
+    final detail = Paint()..color = detailColor;
     final glow = Paint()
       ..color = bright ? accentColor.withOpacity(0.5) : accentColor.withOpacity(0.32)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
 
     switch (type) {
       case ToyType.yarn:
-        _drawYarn(canvas, size, paint, accent, glow);
+        _drawYarn(canvas, size, paint, accent, detail, glow);
         break;
       case ToyType.mouse:
-        _drawMouse(canvas, size, paint, accent, glow);
+        _drawMouse(canvas, size, paint, accent, detail, glow);
         break;
       case ToyType.feather:
-        _drawBird(canvas, size, paint, accent, glow);
+        _drawBird(canvas, size, paint, accent, detail, glow);
         break;
       case ToyType.laser:
-        _drawLaser(canvas, size, paint, accent, glow);
+        _drawLaser(canvas, size, paint, accent, detail, glow);
         break;
     }
   }
 
-  void _drawYarn(Canvas canvas, Size size, Paint paint, Paint accent, Paint glow) {
+  void _drawYarn(Canvas canvas, Size size, Paint paint, Paint accent, Paint detail, Paint glow) {
     final center = Offset(size.width * 0.5, size.height * 0.55);
     final radius = size.width * 0.34;
     canvas.drawCircle(center, radius * 1.1, glow);
     canvas.drawCircle(center, radius, paint);
 
     final linePaint = Paint()
-      ..color = accent.color.withOpacity(0.9)
+      ..color = detail.color.withOpacity(0.9)
       ..strokeWidth = size.width * 0.04
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -410,10 +421,15 @@ class _ToyPainter extends CustomPainter {
     }
 
     final knotPaint = Paint()..color = accent.color.withOpacity(0.95);
+    final rimPaint = Paint()
+      ..color = accent.color.withOpacity(0.9)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.05;
+    canvas.drawCircle(center, radius * 1.02, rimPaint);
     canvas.drawCircle(center.translate(radius * 0.55, radius * 0.55), size.width * 0.06, knotPaint);
 
     final threadPaint = Paint()
-      ..color = accent.color.withOpacity(0.8)
+      ..color = detail.color.withOpacity(0.85)
       ..strokeWidth = size.width * 0.03
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -428,7 +444,7 @@ class _ToyPainter extends CustomPainter {
     canvas.drawPath(threadPath, threadPaint);
 
     final highlight = Paint()
-      ..color = accent.color.withOpacity(0.9)
+      ..color = accent.color.withOpacity(0.85)
       ..strokeWidth = size.width * 0.06
       ..strokeCap = StrokeCap.round;
     canvas.drawArc(
@@ -440,7 +456,7 @@ class _ToyPainter extends CustomPainter {
     );
   }
 
-  void _drawMouse(Canvas canvas, Size size, Paint paint, Paint accent, Paint glow) {
+  void _drawMouse(Canvas canvas, Size size, Paint paint, Paint accent, Paint detail, Paint glow) {
     final bodyCenter = Offset(size.width * 0.5, size.height * 0.58);
     final bodyRect = Rect.fromCenter(
       center: bodyCenter,
@@ -457,6 +473,24 @@ class _ToyPainter extends CustomPainter {
     canvas.drawCircle(Offset(size.width * 0.34, size.height * 0.3), size.width * 0.11, earPaint);
     canvas.drawCircle(Offset(size.width * 0.66, size.height * 0.3), size.width * 0.11, earPaint);
 
+    final earTip = Paint()..color = detail.color.withOpacity(0.85);
+    canvas.drawCircle(Offset(size.width * 0.34, size.height * 0.28), size.width * 0.04, earTip);
+    canvas.drawCircle(Offset(size.width * 0.66, size.height * 0.28), size.width * 0.04, earTip);
+
+    final bellyPaint = Paint()..color = accent.color.withOpacity(0.95);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.5, size.height * 0.6),
+        width: size.width * 0.34,
+        height: size.height * 0.22,
+      ),
+      bellyPaint,
+    );
+
+    final pawPaint = Paint()..color = accent.color.withOpacity(0.9);
+    canvas.drawCircle(Offset(size.width * 0.42, size.height * 0.7), size.width * 0.05, pawPaint);
+    canvas.drawCircle(Offset(size.width * 0.58, size.height * 0.7), size.width * 0.05, pawPaint);
+
     final snout = Paint()..color = accent.color.withOpacity(0.95);
     canvas.drawOval(
       Rect.fromCenter(
@@ -467,22 +501,25 @@ class _ToyPainter extends CustomPainter {
       snout,
     );
 
+    final nosePaint = Paint()..color = detail.color.withOpacity(0.9);
+    canvas.drawCircle(Offset(size.width * 0.5, size.height * 0.49), size.width * 0.03, nosePaint);
+
     final eyePaint = Paint()..color = const Color(0xFF5A3A22);
     canvas.drawCircle(Offset(size.width * 0.44, size.height * 0.42), size.width * 0.04, eyePaint);
     canvas.drawCircle(Offset(size.width * 0.56, size.height * 0.42), size.width * 0.04, eyePaint);
 
     final whisker = Paint()
-      ..color = accent.color.withOpacity(0.75)
+      ..color = detail.color.withOpacity(0.8)
       ..strokeWidth = size.width * 0.018
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(
-      Offset(size.width * 0.3, size.height * 0.48),
-      Offset(size.width * 0.18, size.height * 0.46),
+      Offset(size.width * 0.32, size.height * 0.5),
+      Offset(size.width * 0.18, size.height * 0.5),
       whisker,
     );
     canvas.drawLine(
-      Offset(size.width * 0.7, size.height * 0.48),
-      Offset(size.width * 0.82, size.height * 0.46),
+      Offset(size.width * 0.68, size.height * 0.5),
+      Offset(size.width * 0.82, size.height * 0.5),
       whisker,
     );
 
@@ -497,77 +534,78 @@ class _ToyPainter extends CustomPainter {
     canvas.drawPath(
       tailPath,
       Paint()
-        ..color = accent.color.withOpacity(0.9)
+        ..color = detail.color.withOpacity(0.95)
         ..strokeWidth = size.width * 0.05
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round,
     );
   }
 
-  void _drawBird(Canvas canvas, Size size, Paint paint, Paint accent, Paint glow) {
-    final bodyCenter = Offset(size.width * 0.5, size.height * 0.55);
+  void _drawBird(Canvas canvas, Size size, Paint paint, Paint accent, Paint detail, Paint glow) {
+    final bodyCenter = Offset(size.width * 0.5, size.height * 0.58);
     final bodyRect = Rect.fromCenter(
       center: bodyCenter,
-      width: size.width * 0.6,
-      height: size.height * 0.42,
+      width: size.width * 0.62,
+      height: size.height * 0.44,
     );
     canvas.drawOval(bodyRect.inflate(size.width * 0.05), glow);
     canvas.drawOval(bodyRect, paint);
 
-    final headCenter = Offset(size.width * 0.68, size.height * 0.42);
-    canvas.drawCircle(headCenter, size.width * 0.16, paint);
+    final headCenter = Offset(size.width * 0.68, size.height * 0.44);
+    canvas.drawCircle(headCenter, size.width * 0.17, paint);
 
     final beakPath = Path()
-      ..moveTo(size.width * 0.82, size.height * 0.44)
-      ..lineTo(size.width * 0.95, size.height * 0.5)
-      ..lineTo(size.width * 0.82, size.height * 0.54)
+      ..moveTo(size.width * 0.82, size.height * 0.46)
+      ..lineTo(size.width * 0.96, size.height * 0.52)
+      ..lineTo(size.width * 0.82, size.height * 0.56)
       ..close();
-    canvas.drawPath(beakPath, accent);
+    canvas.drawPath(beakPath, detail);
 
     final eyePaint = Paint()..color = const Color(0xFF5A3A22);
-    canvas.drawCircle(Offset(size.width * 0.7, size.height * 0.42), size.width * 0.035, eyePaint);
+    canvas.drawCircle(Offset(size.width * 0.7, size.height * 0.44), size.width * 0.035, eyePaint);
 
     final wingPath = Path()
-      ..moveTo(size.width * 0.35, size.height * 0.5)
+      ..moveTo(size.width * 0.34, size.height * 0.52)
       ..quadraticBezierTo(
-        size.width * 0.2,
-        size.height * 0.6,
+        size.width * 0.18,
+        size.height * 0.62,
         size.width * 0.28,
-        size.height * 0.75,
+        size.height * 0.78,
       )
       ..quadraticBezierTo(
         size.width * 0.45,
         size.height * 0.7,
-        size.width * 0.52,
-        size.height * 0.58,
+        size.width * 0.54,
+        size.height * 0.6,
       )
       ..close();
-    canvas.drawPath(wingPath, accent..color = accent.color.withOpacity(0.8));
+    canvas.drawPath(wingPath, accent..color = accent.color.withOpacity(0.85));
 
     final tailPath = Path()
-      ..moveTo(size.width * 0.25, size.height * 0.62)
-      ..lineTo(size.width * 0.1, size.height * 0.7)
-      ..lineTo(size.width * 0.24, size.height * 0.74)
+      ..moveTo(size.width * 0.24, size.height * 0.64)
+      ..lineTo(size.width * 0.08, size.height * 0.72)
+      ..lineTo(size.width * 0.24, size.height * 0.78)
       ..close();
     canvas.drawPath(tailPath, accent..color = accent.color.withOpacity(0.7));
   }
 
-  void _drawLaser(Canvas canvas, Size size, Paint paint, Paint accent, Paint glow) {
+  void _drawLaser(Canvas canvas, Size size, Paint paint, Paint accent, Paint detail, Paint glow) {
     final center = Offset(size.width * 0.5, size.height * 0.5);
     final ringPaint = Paint()
       ..color = accent.color.withOpacity(0.6)
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width * 0.05;
-    canvas.drawCircle(center, size.width * 0.32, glow);
-    canvas.drawCircle(center, size.width * 0.26, ringPaint);
-    canvas.drawCircle(center, size.width * 0.18, paint);
-    canvas.drawCircle(center, size.width * 0.07, accent);
+    canvas.drawCircle(center, size.width * 0.28, glow);
+    canvas.drawCircle(center, size.width * 0.22, ringPaint);
+    canvas.drawCircle(center, size.width * 0.16, paint);
+    canvas.drawCircle(center, size.width * 0.06, detail);
   }
 
   @override
   bool shouldRepaint(covariant _ToyPainter oldDelegate) {
     return oldDelegate.baseColor != baseColor ||
         oldDelegate.accentColor != accentColor ||
+        oldDelegate.detailColor != detailColor ||
         oldDelegate.type != type ||
         oldDelegate.bright != bright;
   }
