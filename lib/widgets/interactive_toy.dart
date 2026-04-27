@@ -392,21 +392,41 @@ class _ToyPainter extends CustomPainter {
     final radius = size.width * 0.34;
     canvas.drawCircle(center, radius * 1.1, glow);
     canvas.drawCircle(center, radius, paint);
+
     final linePaint = Paint()
-      ..color = accent.color.withOpacity(0.85)
-      ..strokeWidth = size.width * 0.035
+      ..color = accent.color.withOpacity(0.9)
+      ..strokeWidth = size.width * 0.04
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
-    for (var i = 0; i < 4; i++) {
-      final sweep = (i + 1) * 0.7;
+    for (var i = 0; i < 5; i++) {
+      final sweep = (i + 1) * 0.65;
       canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius * (0.7 + i * 0.06)),
-        0.1 + i * 0.7,
+        Rect.fromCircle(center: center, radius: radius * (0.62 + i * 0.06)),
+        0.3 + i * 0.55,
         sweep,
         false,
         linePaint,
       );
     }
+
+    final knotPaint = Paint()..color = accent.color.withOpacity(0.95);
+    canvas.drawCircle(center.translate(radius * 0.55, radius * 0.55), size.width * 0.06, knotPaint);
+
+    final threadPaint = Paint()
+      ..color = accent.color.withOpacity(0.8)
+      ..strokeWidth = size.width * 0.03
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    final threadPath = Path()
+      ..moveTo(center.dx + radius * 0.62, center.dy + radius * 0.6)
+      ..quadraticBezierTo(
+        center.dx + radius * 0.95,
+        center.dy + radius * 0.8,
+        center.dx + radius * 0.5,
+        center.dy + radius * 1.05,
+      );
+    canvas.drawPath(threadPath, threadPaint);
+
     final highlight = Paint()
       ..color = accent.color.withOpacity(0.9)
       ..strokeWidth = size.width * 0.06
