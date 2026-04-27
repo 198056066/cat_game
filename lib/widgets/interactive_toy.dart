@@ -83,39 +83,45 @@ class _InteractiveToyState extends State<InteractiveToy>
           padding,
           size.height - widget.diameter - padding,
         );
-        return Positioned(
-          left: left,
-          top: top,
-          child: AnimatedOpacity(
-            opacity: _tapped ? 1.0 : 0.95,
-            duration: const Duration(milliseconds: 180),
-            child: GestureDetector(
-              onTap: () {
-                widget.onTap();
-                setState(() {
-                  _tapped = true;
-                });
-                Future.delayed(const Duration(milliseconds: 220), () {
-                  if (mounted) {
-                    setState(() {
-                      _tapped = false;
-                    });
-                  }
-                });
-              },
-              child: AnimatedScale(
-                scale: _tapped ? 1.08 : 1.0,
-                duration: const Duration(milliseconds: 180),
-                curve: Curves.easeOut,
-                child: _ToyVisual(
-                  diameter: widget.diameter,
-                  baseColor: widget.config.baseColor,
-                  accentColor: widget.config.accentColor,
-                  type: widget.config.type,
-                  bright: _tapped,
+        return SizedBox.expand(
+          child: Stack(
+            children: [
+              Positioned(
+                left: left,
+                top: top,
+                child: AnimatedOpacity(
+                  opacity: _tapped ? 1.0 : 0.95,
+                  duration: const Duration(milliseconds: 180),
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.onTap();
+                      setState(() {
+                        _tapped = true;
+                      });
+                      Future.delayed(const Duration(milliseconds: 220), () {
+                        if (mounted) {
+                          setState(() {
+                            _tapped = false;
+                          });
+                        }
+                      });
+                    },
+                    child: AnimatedScale(
+                      scale: _tapped ? 1.08 : 1.0,
+                      duration: const Duration(milliseconds: 180),
+                      curve: Curves.easeOut,
+                      child: _ToyVisual(
+                        diameter: widget.diameter,
+                        baseColor: widget.config.baseColor,
+                        accentColor: widget.config.accentColor,
+                        type: widget.config.type,
+                        bright: _tapped,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         );
       },
