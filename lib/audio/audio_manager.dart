@@ -19,9 +19,7 @@ class AudioManager {
     try {
       await _player.setAsset('assets/audio/ding.wav');
       await _player.stop();
-    } on PlatformException {
-      // Ignore audio errors on unsupported platforms.
-    }
+    } catch (_) {}
   }
 
   Future<void> setVolume(double volume) async {
@@ -33,9 +31,7 @@ class AudioManager {
     try {
       await _player.setAsset(asset);
       await _player.play();
-    } on PlatformException {
-      // Ignore audio errors on unsupported platforms.
-    }
+    } catch (_) {}
   }
 
   String _assetForType(ToyType type) {
