@@ -86,30 +86,34 @@ class _InteractiveToyState extends State<InteractiveToy>
         return Positioned(
           left: left,
           top: top,
-          child: GestureDetector(
-            onTap: () {
-              widget.onTap();
-              setState(() {
-                _tapped = true;
-              });
-              Future.delayed(const Duration(milliseconds: 220), () {
-                if (mounted) {
-                  setState(() {
-                    _tapped = false;
-                  });
-                }
-              });
-            },
-            child: AnimatedScale(
-              scale: _tapped ? 1.08 : 1.0,
-              duration: const Duration(milliseconds: 180),
-              curve: Curves.easeOut,
-              child: _ToyVisual(
-                diameter: widget.diameter,
-                baseColor: widget.config.baseColor,
-                accentColor: widget.config.accentColor,
-                type: widget.config.type,
-                bright: _tapped,
+          child: AnimatedOpacity(
+            opacity: _tapped ? 1.0 : 0.95,
+            duration: const Duration(milliseconds: 180),
+            child: GestureDetector(
+              onTap: () {
+                widget.onTap();
+                setState(() {
+                  _tapped = true;
+                });
+                Future.delayed(const Duration(milliseconds: 220), () {
+                  if (mounted) {
+                    setState(() {
+                      _tapped = false;
+                    });
+                  }
+                });
+              },
+              child: AnimatedScale(
+                scale: _tapped ? 1.08 : 1.0,
+                duration: const Duration(milliseconds: 180),
+                curve: Curves.easeOut,
+                child: _ToyVisual(
+                  diameter: widget.diameter,
+                  baseColor: widget.config.baseColor,
+                  accentColor: widget.config.accentColor,
+                  type: widget.config.type,
+                  bright: _tapped,
+                ),
               ),
             ),
           ),
@@ -167,8 +171,8 @@ class _ToyPainter extends CustomPainter {
     final paint = Paint()..color = baseColor;
     final accent = Paint()..color = accentColor;
     final glow = Paint()
-      ..color = bright ? accentColor.withOpacity(0.35) : accentColor.withOpacity(0.18)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+      ..color = bright ? accentColor.withOpacity(0.45) : accentColor.withOpacity(0.28)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
 
     switch (type) {
       case ToyType.yarn:

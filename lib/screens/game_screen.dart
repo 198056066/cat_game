@@ -34,33 +34,33 @@ class _GameScreenState extends State<GameScreen> {
       ToyConfig(
         type: ToyType.yarn,
         baseColor: const Color(0xFFF2A24B),
-        accentColor: Colors.white,
-        startPosition: const Offset(0.2, 0.35),
-        movement: const Offset(0.22, 0.08),
+        accentColor: const Color(0xFFFFFFFF),
+        startPosition: const Offset(0.25, 0.4),
+        movement: const Offset(0.18, 0.06),
         periodSeconds: 6.5,
       ),
       ToyConfig(
         type: ToyType.mouse,
         baseColor: const Color(0xFFB8702D),
         accentColor: const Color(0xFFFFE6BF),
-        startPosition: const Offset(0.55, 0.55),
-        movement: const Offset(0.18, -0.12),
+        startPosition: const Offset(0.55, 0.5),
+        movement: const Offset(0.14, -0.1),
         periodSeconds: 7.8,
       ),
       ToyConfig(
         type: ToyType.feather,
-        baseColor: const Color(0xFFFAD98A),
+        baseColor: const Color(0xFFFFE29A),
         accentColor: const Color(0xFFD38A45),
-        startPosition: const Offset(0.35, 0.68),
-        movement: const Offset(-0.14, 0.16),
+        startPosition: const Offset(0.35, 0.6),
+        movement: const Offset(-0.12, 0.12),
         periodSeconds: 8.6,
       ),
       ToyConfig(
         type: ToyType.laser,
         baseColor: const Color(0xFFFFD38A),
         accentColor: const Color(0xFF7B3E18),
-        startPosition: const Offset(0.65, 0.25),
-        movement: const Offset(0.12, 0.14),
+        startPosition: const Offset(0.6, 0.32),
+        movement: const Offset(0.1, 0.12),
         periodSeconds: 5.5,
       ),
     ]);
@@ -268,7 +268,7 @@ class _GameScreenState extends State<GameScreen> {
   List<Widget> _buildToys(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final shortest = min(size.width, size.height);
-    final diameter = shortest * 0.16;
+    final diameter = shortest * 0.22;
     return _toys.where((toy) => toy.visible).map((toy) {
       return InteractiveToy(
         key: ValueKey(toy.type),
