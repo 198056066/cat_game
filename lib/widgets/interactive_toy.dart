@@ -379,7 +379,7 @@ class _ToyPainter extends CustomPainter {
         _drawMouse(canvas, size, paint, accent, glow);
         break;
       case ToyType.feather:
-        _drawFeather(canvas, size, paint, accent, glow);
+        _drawBird(canvas, size, paint, accent, glow);
         break;
       case ToyType.laser:
         _drawLaser(canvas, size, paint, accent, glow);
@@ -484,47 +484,52 @@ class _ToyPainter extends CustomPainter {
     );
   }
 
-  void _drawFeather(Canvas canvas, Size size, Paint paint, Paint accent, Paint glow) {
-    final path = Path()
-      ..moveTo(size.width * 0.2, size.height * 0.85)
+  void _drawBird(Canvas canvas, Size size, Paint paint, Paint accent, Paint glow) {
+    final bodyCenter = Offset(size.width * 0.5, size.height * 0.55);
+    final bodyRect = Rect.fromCenter(
+      center: bodyCenter,
+      width: size.width * 0.6,
+      height: size.height * 0.42,
+    );
+    canvas.drawOval(bodyRect.inflate(size.width * 0.05), glow);
+    canvas.drawOval(bodyRect, paint);
+
+    final headCenter = Offset(size.width * 0.68, size.height * 0.42);
+    canvas.drawCircle(headCenter, size.width * 0.16, paint);
+
+    final beakPath = Path()
+      ..moveTo(size.width * 0.82, size.height * 0.44)
+      ..lineTo(size.width * 0.95, size.height * 0.5)
+      ..lineTo(size.width * 0.82, size.height * 0.54)
+      ..close();
+    canvas.drawPath(beakPath, accent);
+
+    final eyePaint = Paint()..color = const Color(0xFF5A3A22);
+    canvas.drawCircle(Offset(size.width * 0.7, size.height * 0.42), size.width * 0.035, eyePaint);
+
+    final wingPath = Path()
+      ..moveTo(size.width * 0.35, size.height * 0.5)
       ..quadraticBezierTo(
-        size.width * 0.35,
-        size.height * 0.2,
-        size.width * 0.82,
-        size.height * 0.28,
+        size.width * 0.2,
+        size.height * 0.6,
+        size.width * 0.28,
+        size.height * 0.75,
       )
       ..quadraticBezierTo(
-        size.width * 0.65,
-        size.height * 0.88,
-        size.width * 0.18,
-        size.height * 0.9,
-      );
-    canvas.drawPath(path, glow);
-    canvas.drawPath(path, paint);
+        size.width * 0.45,
+        size.height * 0.7,
+        size.width * 0.52,
+        size.height * 0.58,
+      )
+      ..close();
+    canvas.drawPath(wingPath, accent..color = accent.color.withOpacity(0.8));
 
-    final spine = Paint()
-      ..color = accent.color.withOpacity(0.85)
-      ..strokeWidth = size.width * 0.035
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    canvas.drawLine(
-      Offset(size.width * 0.22, size.height * 0.86),
-      Offset(size.width * 0.78, size.height * 0.3),
-      spine,
-    );
-
-    final vane = Paint()
-      ..color = accent.color.withOpacity(0.6)
-      ..strokeWidth = size.width * 0.02
-      ..strokeCap = StrokeCap.round;
-    for (var i = 0; i < 4; i++) {
-      final t = i / 4.0;
-      canvas.drawLine(
-        Offset(size.width * (0.3 + t * 0.45), size.height * (0.8 - t * 0.45)),
-        Offset(size.width * (0.38 + t * 0.45), size.height * (0.86 - t * 0.45)),
-        vane,
-      );
-    }
+    final tailPath = Path()
+      ..moveTo(size.width * 0.25, size.height * 0.62)
+      ..lineTo(size.width * 0.1, size.height * 0.7)
+      ..lineTo(size.width * 0.24, size.height * 0.74)
+      ..close();
+    canvas.drawPath(tailPath, accent..color = accent.color.withOpacity(0.7));
   }
 
   void _drawLaser(Canvas canvas, Size size, Paint paint, Paint accent, Paint glow) {
