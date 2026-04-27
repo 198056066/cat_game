@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(flutter create *)"
+      "Bash(flutter create *)",
+      "Bash(flutter run *)",
+      "Bash(flutter pub *)",
+      "Bash(fvm flutter *)",
+      "Bash(\"C:/Users/EDY/fvm/versions/3.27.0/bin/flutter.bat\" pub *)",
+      "Bash(\"C:/Users/EDY/fvm/versions/3.27.0/bin/flutter.bat\" run *)",
+      "Bash(\"C:/Users/EDY/fvm/versions/3.27.0/bin/flutter.bat\" --version)",
+      "Bash(\"C:/Users/EDY/fvm/versions/3.27.0/bin/flutter.bat\" clean *)",
+      "Bash(\"C:/Users/EDY/fvm/versions/3.27.0/bin/cache/dart-sdk/bin/dart.exe\" -e \"import 'dart:typed_data'; void main\\(\\){print\\(UnmodifiableUint8ListView\\);} \")",
+      "Bash(\"C:/Users/EDY/fvm/versions/3.27.0/bin/cache/dart-sdk/bin/dart.exe\" --version)"
     ]
   }
 }

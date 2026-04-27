@@ -2,7 +2,7 @@
     package="com.example.cat_game">
    <application
         android:label="cat_game"
-        android:name="${applicationName}"
+        android:name="io.flutter.app.FlutterMultiDexApplication"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
