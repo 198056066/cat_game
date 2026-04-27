@@ -268,7 +268,7 @@ class _GameScreenState extends State<GameScreen> {
   List<Widget> _buildToys(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final shortest = min(size.width, size.height);
-    final diameter = shortest * 0.22;
+    final diameter = shortest * 0.24;
     return _toys.where((toy) => toy.visible).map((toy) {
       return InteractiveToy(
         key: ValueKey(toy.type),
