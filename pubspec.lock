@@ -361,10 +361,10 @@ packages:
     dependency: "direct overridden"
     description:
       name: win32
-      sha256: "329edf97fdd893e0f1e3b9e88d6a0e627128cc17cc316a8d67fda8f1451178ba"
+      sha256: "68d1e89a91ed61ad9c370f9f8b6effed9ae5e0ede22a270bdfa6daf79fc2290a"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.13.0"
+    version: "5.5.4"
   xdg_directories:
     dependency: transitive
     description:
